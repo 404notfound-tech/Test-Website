@@ -1,4 +1,6 @@
-import { floors } from './floors.js';
+// same ?v= as main.js in index.html, passed on so modules don't come from an old cache
+const v = new URL(import.meta.url).search;
+const { floors } = await import(`./floors.js${v}`);
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -102,7 +104,7 @@ async function setupFloors() {
   if (hasWebGL()) {
     try {
       await document.fonts?.ready; // so 3D labels use the mono font
-      const { createFloorplan } = await import('./floorplan.js');
+      const { createFloorplan } = await import(`./floorplan.js${v}`);
       viewer = createFloorplan(view);
     } catch (err) {
       console.warn('3D view failed, using 2D fallback.', err);
@@ -110,7 +112,7 @@ async function setupFloors() {
     }
   }
   if (!viewer) {
-    const { createFallback } = await import('./fallback2d.js');
+    const { createFallback } = await import(`./fallback2d.js${v}`);
     viewer = createFallback(view);
     document.querySelector('#floor-hint').textContent = '// 2d view. your browser skipped the 3d.';
   }
