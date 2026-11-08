@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yori's – Club &amp; Tanzbar</title>
+  <title>Yori's – house party, but bigger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script type="importmap">
     {
@@ -15,79 +18,108 @@
   </script>
 </head>
 <body>
-  <header class="hero">
-    <div class="wrap">
-      <h1 class="hero__title">Yori's</h1>
-      <p class="hero__claim">Wie 'ne Hausparty. Nur mit mehr Zimmern.</p>
-      <p class="hero__sub">House, Pop-Hymnen und Techno im Keller. Einlass ab 18.</p>
-      <a class="btn" href="#stockwerke">Zu den Stockwerken</a>
-    </div>
+  <!-- [00] loader -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <p class="loader__label">[00] yoris://loading</p>
+    <p class="loader__text">warming up the party...</p>
+    <p class="loader__percent"><span data-percent>0</span>%</p>
+  </div>
+
+  <header class="topbar">
+    <a class="topbar__logo" href="#top">{ yori's }</a>
+    <nav class="topbar__nav" aria-label="main">
+      <a href="#floors">[floors]</a>
+      <a href="#prices">[prices]</a>
+    </nav>
+    <p class="topbar__clock"><span class="muted">local</span> <time id="clock">--:--:--</time></p>
+    <button class="topbar__sound" id="sound" type="button" aria-pressed="false">[sound: off]</button>
   </header>
 
   <main>
-    <section class="section" id="konzept">
+    <!-- [01] hero -->
+    <section class="hero" id="top">
       <div class="wrap">
-        <h2>Wie bei Freunden zuhause</h2>
-        <ul class="cards">
-          <li class="card">
-            <h3>Ein ganzes Haus</h3>
-            <p>Bei uns feierst du nicht in einer Halle, sondern in einem Haus. Vom Keller bis aufs Dach.</p>
-          </li>
-          <li class="card">
-            <h3>Jedes Zimmer anders</h3>
-            <p>Jedes Zimmer hat seinen eigenen Einrichtungsstil. Zimmer wechseln, Vibe wechseln.</p>
-          </li>
-          <li class="card">
-            <h3>Die Bar ist die Küche</h3>
-            <p>Wo landet man auf jeder Hausparty? Genau. Deshalb gibt's die Drinks bei uns in der Küche.</p>
-          </li>
-        </ul>
+        <p class="label"><span class="label__num">[01]</span> yoris://home</p>
+        <h1 class="display display--hero">Yori's</h1>
+        <p class="hero__line">a house party, just bigger.<br>four floors (three in winter). one kitchen. zero reasons to go home early.</p>
+        <div class="actions">
+          <a class="btn btn--solid" href="#floors">[floors]</a>
+          <a class="btn" href="#concept">[come in]</a>
+        </div>
+        <p class="hero__meta">{ 18+ } { house · techno · pop anthems }</p>
       </div>
     </section>
 
-    <section class="section" id="stockwerke">
+    <div class="divider" aria-hidden="true">&gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt;</div>
+
+    <!-- [02] concept -->
+    <section class="section" id="concept">
       <div class="wrap">
-        <h2>Vier Etagen, vier Vibes</h2>
+        <p class="label"><span class="label__num">[02]</span> concept <span class="accent">&gt;&gt;</span></p>
+        <h2 class="display"><span>House</span><span>par</span><span>ty.</span></h2>
+        <ol class="concept">
+          <li><span class="concept__num">01 //</span> it's built like a house. you don't find a spot, you pick a room.</li>
+          <li><span class="concept__num">02 //</span> every room has its own interior. new room, new vibe.</li>
+          <li><span class="concept__num">03 //</span> the bar is the kitchen. you were gonna end up there anyway.</li>
+        </ol>
+        <p class="small">// 18+ only. mostly students, all welcome.</p>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true">&gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt;</div>
+
+    <!-- [03] floors -->
+    <section class="section" id="floors">
+      <div class="wrap">
+        <p class="label"><span class="label__num">[03]</span> floors <span class="accent">&gt;&gt;</span></p>
+        <h2 class="display"><span>Pick a</span><span>fl</span><span>oor.</span></h2>
         <div class="floors">
+          <div class="floors__info" id="floor-info" aria-live="polite">
+            <p class="floors__url accent" data-url></p>
+            <p class="floors__music" data-music></p>
+            <p class="floors__line" data-line></p>
+          </div>
           <div class="floor-view" id="floor-view"></div>
           <ul class="floor-list" id="floor-list"></ul>
+          <p class="small floors__hint" id="floor-hint">// drag to spin. pinch to zoom.</p>
         </div>
-        <p class="hint">Ziehen zum Drehen, zwei Finger zum Zoomen.</p>
       </div>
     </section>
 
-    <section class="section" id="preise">
+    <div class="divider" aria-hidden="true">&gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt;</div>
+
+    <!-- [04] prices -->
+    <section class="section" id="prices">
       <div class="wrap">
-        <h2>Preise</h2>
-        <div class="prices">
-          <div>
-            <h3>Eintritt</h3>
-            <dl class="price-list">
-              <div><dt>Eintritt</dt><dd>10 €</dd></div>
-            </dl>
-            <p class="small">Einlass ab 18.</p>
-          </div>
-          <div>
-            <h3>Drinks</h3>
-            <dl class="price-list">
-              <div><dt>Shots</dt><dd>2,50 €</dd></div>
-              <div><dt>Longdrinks</dt><dd>10 €</dd></div>
-              <div><dt>Alkoholfrei</dt><dd>3,50 €</dd></div>
-            </dl>
-          </div>
-        </div>
+        <p class="label"><span class="label__num">[04]</span> prices <span class="accent">&gt;&gt;</span></p>
+        <h2 class="display"><span>The</span><span>dam</span><span>age.</span></h2>
+        <pre class="code"><code><span class="code__key">prices</span> = {
+  <span class="code__key">entry</span>:         <span class="code__val">€10</span>,
+  <span class="code__key">shots</span>:         <span class="code__val">€2.50</span>,
+  <span class="code__key">longdrinks</span>:    <span class="code__val">€10</span>,
+  <span class="code__key">non_alcoholic</span>: <span class="code__val">€3.50</span>
+}
+<span class="code__comment">// 18+ only. cheap enough to stay till the end.</span></code></pre>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
+  <div class="divider" aria-hidden="true">&gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt; &gt;&gt;</div>
+
+  <!-- [05] footer -->
+  <footer class="section footer">
     <div class="wrap">
-      <p class="footer__name">Yori's</p>
+      <p class="label"><span class="label__num">[05]</span> info <span class="accent">&gt;&gt;</span></p>
+      <h2 class="display"><span>See</span><span>ya.</span></h2>
       <dl class="footer__info">
-        <div><dt>Adresse</dt><dd class="placeholder">[Platzhalter: Adresse]</dd></div>
-        <div><dt>Öffnungszeiten</dt><dd class="placeholder">[Platzhalter: Öffnungszeiten]</dd></div>
-        <div><dt>Instagram</dt><dd class="placeholder">[Platzhalter: Instagram]</dd></div>
+        <div><dt>address:</dt><dd><span class="placeholder">[placeholder: address]</span></dd></div>
+        <div><dt>hours:</dt><dd><span class="placeholder">[placeholder: opening hours]</span></dd></div>
+        <div><dt>instagram:</dt><dd><span class="placeholder">[placeholder: instagram]</span></dd></div>
       </dl>
+      <div class="actions">
+        <a class="btn" href="#top">[back]</a>
+      </div>
+      <p class="small">{ yori's } :// house party, but bigger.</p>
     </div>
   </footer>
 
