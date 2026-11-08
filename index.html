@@ -3,11 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coming soon</title>
+  <title>Yori's – Club &amp; Tanzbar</title>
   <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
-  <p>Coming soon</p>
-  <script src="js/main.js"></script>
+  <header class="hero">
+    <div class="wrap">
+      <h1 class="hero__title">Yori's</h1>
+      <p class="hero__claim">Wie 'ne Hausparty. Nur mit mehr Zimmern.</p>
+      <p class="hero__sub">House, Pop-Hymnen und Techno im Keller. Einlass ab 18.</p>
+      <a class="btn" href="#stockwerke">Zu den Stockwerken</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="konzept">
+      <div class="wrap">
+        <h2>Wie bei Freunden zuhause</h2>
+        <ul class="cards">
+          <li class="card">
+            <h3>Ein ganzes Haus</h3>
+            <p>Bei uns feierst du nicht in einer Halle, sondern in einem Haus. Vom Keller bis aufs Dach.</p>
+          </li>
+          <li class="card">
+            <h3>Jedes Zimmer anders</h3>
+            <p>Jedes Zimmer hat seinen eigenen Einrichtungsstil. Zimmer wechseln, Vibe wechseln.</p>
+          </li>
+          <li class="card">
+            <h3>Die Bar ist die Küche</h3>
+            <p>Wo landet man auf jeder Hausparty? Genau. Deshalb gibt's die Drinks bei uns in der Küche.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="stockwerke">
+      <div class="wrap">
+        <h2>Vier Etagen, vier Vibes</h2>
+        <div class="floors">
+          <div class="floor-view" id="floor-view"></div>
+          <ul class="floor-list" id="floor-list"></ul>
+        </div>
+        <p class="hint">Ziehen zum Drehen, zwei Finger zum Zoomen.</p>
+      </div>
+    </section>
+
+    <section class="section" id="preise">
+      <div class="wrap">
+        <h2>Preise</h2>
+        <div class="prices">
+          <div>
+            <h3>Eintritt</h3>
+            <dl class="price-list">
+              <div><dt>Eintritt</dt><dd>10 €</dd></div>
+            </dl>
+            <p class="small">Einlass ab 18.</p>
+          </div>
+          <div>
+            <h3>Drinks</h3>
+            <dl class="price-list">
+              <div><dt>Shots</dt><dd>2,50 €</dd></div>
+              <div><dt>Longdrinks</dt><dd>10 €</dd></div>
+              <div><dt>Alkoholfrei</dt><dd>3,50 €</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p class="footer__name">Yori's</p>
+      <dl class="footer__info">
+        <div><dt>Adresse</dt><dd class="placeholder">[Platzhalter: Adresse]</dd></div>
+        <div><dt>Öffnungszeiten</dt><dd class="placeholder">[Platzhalter: Öffnungszeiten]</dd></div>
+        <div><dt>Instagram</dt><dd class="placeholder">[Platzhalter: Instagram]</dd></div>
+      </dl>
+    </div>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

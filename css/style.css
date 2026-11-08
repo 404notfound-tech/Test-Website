@@ -13,3 +13,282 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* Platzhalter-Look, noch nicht final */
+
+:root {
+  --bg: #0b0b10;
+  --surface: #15151d;
+  --border: #2a2a36;
+  --text: #f2f2f7;
+  --muted: #9a9aab;
+  --accent: #ff2e63;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+ul {
+  list-style: none;
+}
+
+h2 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section {
+  padding: 3.5rem 0;
+}
+
+.small,
+.hint {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Hero */
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 46, 99, 0.35), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 106, 213, 0.25), transparent 50%),
+    var(--bg);
+}
+
+.hero__title {
+  font-size: clamp(4rem, 22vw, 9rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.hero__claim {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+.hero__sub {
+  color: var(--muted);
+  margin: 0.5rem 0 2rem;
+}
+
+/* Konzept */
+
+.cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.card p {
+  color: var(--muted);
+}
+
+/* Stockwerke */
+
+#stockwerke {
+  --floor-accent: var(--accent);
+}
+
+.floors {
+  display: grid;
+  gap: 1rem;
+}
+
+.floor-view {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-height: 70svh;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--floor-accent);
+  background: radial-gradient(circle at 50% 40%, #1a1a24, var(--bg));
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.floor-view canvas {
+  display: block;
+}
+
+.floor-view__error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.floor-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.floor-btn {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.floor-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+}
+
+.floor-btn__name {
+  font-weight: 700;
+}
+
+.floor-btn__music {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.hint {
+  margin-top: 0.75rem;
+}
+
+/* Preise */
+
+.prices {
+  display: grid;
+  gap: 2rem;
+}
+
+.price-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.price-list dd {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.prices .small {
+  margin-top: 0.5rem;
+}
+
+/* Footer */
+
+.footer {
+  padding: 2.5rem 0 3rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer__name {
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.footer__info {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.footer__info dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.placeholder {
+  display: inline-block;
+  padding: 0 0.4rem;
+  border: 1px dashed var(--muted);
+  border-radius: 0.25rem;
+  color: var(--muted);
+}
+
+/* Größere Screens */
+
+@media (min-width: 48rem) {
+  .section {
+    padding: 5rem 0;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+  }
+
+  .cards,
+  .footer__info {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .prices {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .floors {
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+  }
+
+  .floor-view {
+    aspect-ratio: 4 / 3;
+  }
+
+  .floor-list {
+    grid-template-columns: 1fr;
+  }
+}
