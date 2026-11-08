@@ -1,38 +1,44 @@
-// 3D-Ansicht der Grundrisse. Die Daten kommen aus floors.js.
+// 3D floor plan view. Data comes from floors.js.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-const WALL_H = 1.4;   // Wandhöhe (niedrig, damit man reinschauen kann)
-const WALL_T = 0.12;  // Wandstärke
-const DOOR_W = 1.4;   // Türbreite
-const INSET = WALL_T / 2 + 0.03; // Wände leicht nach innen, damit Nachbarräume sich nicht überlappen
+const WALL_H = 1.4;   // low walls so you can look inside
+const WALL_T = 0.12;  // wall thickness
+const DOOR_W = 1.4;   // door width
+const INSET = WALL_T / 2 + 0.03; // pull walls inward so neighbouring rooms don't overlap
+const FONT = '"JetBrains Mono", ui-monospace, monospace';
 
 export function createFloorplan(container) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
   camera.position.set(1, 1.1, 1.2);
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.enablePan = false;
   controls.minDistance = 8;
   controls.maxDistance = 45;
   controls.maxPolarAngle = Math.PI / 2.2;
-  controls.autoRotate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  controls.autoRotate = !reduceMotion;
   controls.autoRotateSpeed = 0.6;
   controls.addEventListener('start', () => { controls.autoRotate = false; });
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x222233, 1.4));
-  const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+  // light gets tinted with the floor's accent
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x111118, 1.3);
+  scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xffffff, 1);
   sun.position.set(10, 20, 8);
   scene.add(sun);
 
   let group = null;
   let current = null;
+  let needsRender = true;
+  let visible = true;
 
   function resize() {
     const w = container.clientWidth;
@@ -41,10 +47,11 @@ export function createFloorplan(container) {
     renderer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    needsRender = true;
   }
 
   function fitCamera(floor) {
-    let dist = Math.max(floor.size.w, floor.size.d) * 1.5;
+    let dist = Math.max(floor.size.w, floor.size.d) * 1.45;
     if (camera.aspect < 1) dist /= Math.max(camera.aspect, 0.5);
     controls.target.set(0, 0, 0);
     camera.position.normalize().multiplyScalar(dist);
@@ -59,23 +66,29 @@ export function createFloorplan(container) {
     current = floor;
     group = buildFloor(floor);
     scene.add(group);
+    hemi.color.set('#ffffff').lerp(new THREE.Color(floor.accent), 0.35);
     fitCamera(floor);
     renderer.render(scene, camera);
   }
 
-  // Nur rendern, wenn die Ansicht sichtbar ist
-  let visible = true;
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }).observe(container);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    needsRender = true;
+  }).observe(container);
   new ResizeObserver(() => {
     resize();
     if (current) fitCamera(current);
   }).observe(container);
   resize();
 
+  // only draw when visible and something actually changed
   renderer.setAnimationLoop(() => {
     if (!visible) return;
-    controls.update();
-    renderer.render(scene, camera);
+    const moved = controls.update();
+    if (moved || needsRender) {
+      renderer.render(scene, camera);
+      needsRender = false;
+    }
   });
 
   return { show };
@@ -84,36 +97,31 @@ export function createFloorplan(container) {
 function buildFloor(floor) {
   const g = new THREE.Group();
   const accent = new THREE.Color(floor.accent);
+  const edgeMat = new THREE.LineBasicMaterial({ color: accent });
 
-  // Bodenplatte mit Akzent-Kante
-  const base = box(floor.size.w, 0.2, floor.size.d, new THREE.Color('#15151c'));
+  // base plate
+  const base = box(floor.size.w, 0.2, floor.size.d, new THREE.Color('#111116'));
   base.position.y = -0.1;
-  g.add(base);
-  const edges = new THREE.LineSegments(
-    new THREE.EdgesGeometry(base.geometry),
-    new THREE.LineBasicMaterial({ color: accent })
-  );
-  edges.position.copy(base.position);
-  g.add(edges);
+  g.add(base, edgesOf(base, edgeMat));
 
-  const tileColor = new THREE.Color('#1e1e28').lerp(accent, 0.18);
-  const wallColor = new THREE.Color('#2a2a36').lerp(accent, 0.35);
+  const tileColor = new THREE.Color('#1a1a20').lerp(accent, 0.12);
+  const wallColor = new THREE.Color('#24242c');
 
   for (const room of floor.rooms) {
     const tile = box(room.w - 0.1, 0.02, room.d - 0.1, tileColor);
     tile.position.set(room.x, 0.01, room.z);
     g.add(tile);
 
-    if (floor.walls !== false) addWalls(g, room, wallColor);
+    if (floor.walls !== false) addWalls(g, room, wallColor, edgeMat);
 
-    const label = makeLabel(room.name, '#ffffff', 0.7);
+    const label = makeLabel(room.name, '#f1f1ee', 0.65);
     label.position.set(room.x, WALL_H + 0.6, room.z);
     g.add(label);
   }
 
   for (const p of floor.props || []) {
     const color = p.color ? new THREE.Color(p.color) : accent;
-    const mesh = box(p.w, p.h, p.d, color, p.color ? 0 : 0.35);
+    const mesh = box(p.w, p.h, p.d, color, p.color ? 0 : 0.4);
     mesh.position.set(p.x, p.h / 2, p.z);
     g.add(mesh);
   }
@@ -127,18 +135,18 @@ function buildFloor(floor) {
   return g;
 }
 
-function addWalls(g, room, color) {
+function addWalls(g, room, color, edgeMat) {
   const { x, z, w, d } = room;
   const doors = room.doors || [];
   const open = room.open || [];
-  const hLen = w - 2 * INSET + WALL_T; // Wände hinten/vorne
-  const vLen = d - 2 * INSET - WALL_T; // Wände links/rechts (zwischen den anderen)
+  const hLen = w - 2 * INSET + WALL_T; // back / front walls
+  const vLen = d - 2 * INSET - WALL_T; // left / right walls (fit between the others)
 
   const sides = [
     { id: 'n', cx: x, cz: z - d / 2 + INSET, len: hLen, alongX: true },
     { id: 's', cx: x, cz: z + d / 2 - INSET, len: hLen, alongX: true },
     { id: 'w', cx: x - w / 2 + INSET, cz: z, len: vLen, alongX: false },
-    { id: 'o', cx: x + w / 2 - INSET, cz: z, len: vLen, alongX: false },
+    { id: 'e', cx: x + w / 2 - INSET, cz: z, len: vLen, alongX: false },
   ];
 
   for (const s of sides) {
@@ -162,35 +170,36 @@ function addWalls(g, room, color) {
         WALL_H / 2,
         s.alongX ? s.cz : s.cz + seg.off
       );
-      g.add(wall);
+      g.add(wall, edgesOf(wall, edgeMat));
     }
   }
 }
 
 function box(w, h, d, color, emissive = 0) {
-  const mat = new THREE.MeshStandardMaterial({
-    color,
-    roughness: 0.8,
-    emissive: color,
-    emissiveIntensity: emissive,
-  });
+  const mat = new THREE.MeshLambertMaterial({ color, emissive: color, emissiveIntensity: emissive });
   return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+}
+
+function edgesOf(mesh, mat) {
+  const lines = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), mat);
+  lines.position.copy(mesh.position);
+  return lines;
 }
 
 function makeLabel(text, color, height) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  const font = '700 64px system-ui, sans-serif';
+  const font = `700 56px ${FONT}`;
   ctx.font = font;
-  canvas.width = Math.ceil(ctx.measureText(text).width) + 48;
-  canvas.height = 96;
+  canvas.width = Math.ceil(ctx.measureText(text).width) + 40;
+  canvas.height = 88;
   ctx.font = font;
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.fillStyle = 'rgba(10, 10, 11, 0.75)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = color;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 4);
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 3);
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
